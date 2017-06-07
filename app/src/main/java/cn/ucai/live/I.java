@@ -210,7 +210,7 @@ public interface I {
 	/** 客户端发送的分页下载附近的人的请求 */
 	String REQUEST_DOWNLOAD_LOCATION 				= 		"downloadLocation";
 
-	
+
 	/** 客户端发送的全部礼物信息并展示，包括礼物的名称、图片地址和价格的请求 */
 	String REQUEST_ALL_GIFTS		 				= 		"live/getAllGifts";
 	/** 客户端发送的分页加载充值流水的请求 */

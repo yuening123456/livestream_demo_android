@@ -1,8 +1,11 @@
 package cn.ucai.live.data.restapi;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -13,19 +16,22 @@ public interface LiveService {
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getAllGifts
     @GET("live/getAllGifts")
     Call<String> getAllGifts();
+
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getRechargeStatements?uname=1&pageId=1&pageSize=1
     @GET("live/getRechargeStatements")
-    Call<String>getRechargeStatements(
+    Call<String> getRechargeStatements(
             @Query("uname") String uname,
             @Query("pageId") int pageId,
             @Query("pageSize") int pageSize
     );
+
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getBalance?uname=w
     @GET("live/getBalance")
     Call<String> getBalance(@Query("uname") String uname);
+
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getGiftStatementsByAnchor?anchor=q
     @GET("live/getGiftStatementsByAnchor")
-    Call<String>getGiftStatementsByAnchor(@Query("anchor") String anchor);
+    Call<String> getGiftStatementsByAnchor(@Query("anchor") String anchor);
 
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/givingGifts?uname=1&anchor=1&giftId=1&giftNum=1
     @GET("live/givingGifts")
@@ -38,7 +44,7 @@ public interface LiveService {
 
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getGivingGiftStatements?uname=1&pageId=1&pageSize=1
     @GET("live/getGivingGiftStatements")
-    Call<String>getGivingGiftStatements(
+    Call<String> getGivingGiftStatements(
             @Query("uname") String uname,
             @Query("pageId") int pageId,
             @Query("pageSize") int pageSize
@@ -51,6 +57,7 @@ public interface LiveService {
             @Query("pageId") int pageId,
             @Query("pageSize") int pageSize
     );
+
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/recharge?uname=1&rmb=1
     @GET("live/recharge")
     Call<String> recharge(
@@ -67,15 +74,16 @@ public interface LiveService {
             @Query("owner") String owner,
             @Query("maxusers") int maxusers,
             @Query("members") String members
-            );
+    );
 
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/uploadChatRoomAvatar?chatRoomId=1
     @POST("live/uploadChatRoomAvatar")
-    Call<String> uploadChatRoomAvatar(@Query("chatRoomId") String chatRoomId);
+    Call<String> uploadChatRoomAvatar(
+            @Part("chatRosomId") String chatRoomId);
 
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getAllChatRoom
     @GET("live/getAllChatRoom")
-    Call<String>getAllChatRoom();
+    Call<String> getAllChatRoom();
 
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getChatRoomDetail?chatRoomId=1
     @GET("live/getChatRoomDetail")
@@ -83,13 +91,25 @@ public interface LiveService {
 
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/deleteChatRoom?auth=1&chatRoomId=1
     @GET("live/deleteChatRoom")
-    Call<String>deleteChatRoom(
+    Call<String> deleteChatRoom(
             @Query("auth") String auth,
             @Query("chatRoomId") String chatRoomId);
+
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/deleteChatRoomMember?auth=1&chatRoomId=1&username=1
     @GET("live/deleteChatRoomMember")
-    Call<String>deleteChatRoomMember(
+    Call<String> deleteChatRoomMember(
             @Query("auth") String auth,
             @Query("chatRoomId") String chatRoomId,
             @Query("username") String username);
+
+
+    //注册用户
+    //http://101.251.196.90:8080/SuperWeChatServerV2.0/register?m_user_name=q&m_user_nick=11&m_user_password=1
+    @Multipart
+    @POST("register")
+    Call<String> register(
+            @Query("m_user_name") String m_user_name,
+            @Query("m_user_nick") String m_user_nick,
+            @Query("m_user_password") String m_user_password,
+            @Part MultipartBody.Part file);
 }
