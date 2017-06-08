@@ -31,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.live.I;
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
@@ -80,7 +81,9 @@ public class RegisterActivity extends BaseActivity {
                 @Override
                 public void run() {
                     pd.dismiss();
+                    LiveHelper.getInstance().setCurrentUserName(username);
                     showToast("注册成功");
+
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
                 }
@@ -197,11 +200,9 @@ public class RegisterActivity extends BaseActivity {
         Bundle extras = picdata.getExtras();
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
-            L.i("main", "setPicToView=" + photo);
 //            Drawable drawable = new BitmapDrawable(getResources(), photo);
 //            mIvUserinfoAvatar.setImageDrawable(drawable);
             saveBitmapFile(photo);
-            L.i("main", "setPicToView=file" + file);
             ivGroupAvatar.setImageBitmap(photo);
         }
     }
@@ -246,14 +247,18 @@ public class RegisterActivity extends BaseActivity {
             dismissdialog();
         }
     }
-
+    boolean b;
     private void registerAppService() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (LiveManager.getInstance().register(username, nickname, MD5.getMessageDigest(password), file)) {
-
+                    if(file==null){
+                        b = LiveManager.getInstance().register(username, nickname, MD5.getMessageDigest(password));
+                    }else{
+                        b=LiveManager.getInstance().register(username, nickname, MD5.getMessageDigest(password), file);
+                    }
+                    if (b) {
                         registerEMService();
                     } else {
                         dismissdialog();
