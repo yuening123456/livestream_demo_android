@@ -6,11 +6,12 @@ import android.content.Intent;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
+
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.model.EasePreferenceManager;
+import com.hyphenate.easeui.model.User;
 import com.hyphenate.util.EMLog;
 
-import cn.hyphenate.easeui.domain.User;
-import cn.hyphenate.easeui.model.EasePreferenceManager;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.activity.MainActivity;
@@ -86,7 +87,7 @@ public class LiveHelper {
             @Override
             public void run() {
                 try {
-                    User user = LiveManager.getInstance().loadUserInfo(username);
+                   User  user = LiveManager.getInstance().loadUserInfo(username);
                     if (user!=null){
                     setCurrentAppUserNick(user.getMUserNick());
                     setCurrentAppUserAvatar(user.getAvatar());
@@ -99,8 +100,8 @@ public class LiveHelper {
     }
 
     private void setCurrentAppUserAvatar(String avatar) {
-        getCurrentAppUserInfo().setAvatar(avatar);
-        EasePreferenceManager.getInstance().setCurrentUserAvatar(avatar);
+            getCurrentAppUserInfo().setAvatar(avatar);
+         EasePreferenceManager.getInstance().setCurrentUserAvatar(avatar);
     }
 
     private void setCurrentAppUserNick(String nickname) {
@@ -124,5 +125,9 @@ public class LiveHelper {
 
     private String getCurrentUserAvatar() {
         return EasePreferenceManager.getInstance().getCurrentUserAvatar();
+    }
+    public synchronized void reset() {
+        currentAppUser = null;
+        EasePreferenceManager.getInstance().removeCurrentUserInfo();
     }
 }
