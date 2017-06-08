@@ -112,4 +112,13 @@ public interface LiveService {
             @Query("m_user_nick") String m_user_nick,
             @Query("m_user_password") String m_user_password,
             @Part MultipartBody.Part file);
+
+    //取消注册 http://101.251.196.90:8080/SuperWeChatServerV2.0/unregister?m_user_name=ad
+    @GET("unregister")
+    Call<String> unRegister(@Query("m_user_name") String m_user_name);
+
+    //加载用户信息 http://101.251.196.90:8080/SuperWeChatServerV2.0/findUserByUserName?m_user_name=1
+    @GET("findUserByUserName")
+    Call<String> loadUserInfo(@Query("m_user_name") String m_user_name);
+
 }
