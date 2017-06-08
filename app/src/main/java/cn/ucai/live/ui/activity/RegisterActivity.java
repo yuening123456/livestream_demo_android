@@ -10,13 +10,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
@@ -30,33 +30,34 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.hyphenate.easeui.domain.User;
 import cn.ucai.live.I;
 import cn.ucai.live.R;
+import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
-import cn.ucai.live.utils.CommonUtils;
 import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.MD5;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 
 public class RegisterActivity extends BaseActivity {
     private static final int REQUESTCODE_PICK = 1;
     private static final int REQUESTCODE_CUTTING = 2;
     @BindView(R.id.email)
-    EditText username;
+    EditText userNameEditText;
     @BindView(R.id.password)
-    EditText password;
+    EditText passwordEditText;
     @BindView(R.id.register)
     Button register;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.nick)
-    EditText nick;
+    EditText userNickname;
     @BindView(R.id.iv_group_avatar)
     ImageView ivGroupAvatar;
-    String avatarName;
+    String avatarName, username, password, nickname;
     File file;
+    @BindView(R.id.confirmpassword)
+    EditText confirmPwdEditText;
+    ProgressDialog pd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,52 +70,62 @@ public class RegisterActivity extends BaseActivity {
             }
         });
 
-        register.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void registerEMService() {
+        try {
+            showDialog();
+            EMClient.getInstance().createAccount(username, MD5.getMessageDigest(password));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pd.dismiss();
+                    showToast("注册成功");
+                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                    finish();
+                }
+            });
+        } catch (final HyphenateException e) {
+            e.printStackTrace();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    unRegisterService();
+                    dismissdialog();
+                    showLongToast("注册失败：" + e.getMessage());
+
+                }
+            });
+        }
+
+    }
+
+    private void unRegisterService() {
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(username.getText()) || TextUtils.isEmpty(password.getText())) {
-                    showToast("用户名和密码不能为空");
-                    return;
+            public void run() {
+                try {
+                    LiveManager.getInstance().unRegister(username);
+                } catch (LiveException e) {
+                    e.printStackTrace();
                 }
-                if(TextUtils.isEmpty(nick.getText())){
-                    showToast("昵称不能为空");
-                }
-               LiveManager.getInstance().register(username.getText().toString(), nick.
-                        getText().toString(), password.getText().toString(), file);
-
-                final ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
-                pd.setMessage("正在注册...");
-                pd.setCanceledOnTouchOutside(false);
-                pd.show();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            EMClient.getInstance().createAccount(username.getText().toString(), MD5.getMessageDigest(password.getText().toString()) );
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pd.dismiss();
-                                    showToast("注册成功");
-                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                    finish();
-                                }
-                            });
-                        } catch (final HyphenateException e) {
-                            e.printStackTrace();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pd.dismiss();
-                                    showLongToast("注册失败：" + e.getMessage());
-                                }
-                            });
-                        }
-                    }
-                }).start();
-
             }
-        });
+        }).start();
+    }
+
+
+    private void showDialog() {
+        pd = new ProgressDialog(RegisterActivity.this);
+        pd.setMessage("正在注册...");
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
+
+    }
+
+    public void dismissdialog() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 
 
@@ -122,6 +133,7 @@ public class RegisterActivity extends BaseActivity {
     public void onViewClicked() {
         uploadHeadPhoto();
     }
+
     private void uploadHeadPhoto() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dl_title_upload_photo);
@@ -147,10 +159,9 @@ public class RegisterActivity extends BaseActivity {
                 });
         builder.create().show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        // super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
             case REQUESTCODE_PICK:
                 if (data == null || data.getData() == null) {
@@ -166,8 +177,9 @@ public class RegisterActivity extends BaseActivity {
             default:
                 break;
         }
-
+        super.onActivityResult(requestCode, resultCode, data);
     }
+
     public void startPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -180,6 +192,7 @@ public class RegisterActivity extends BaseActivity {
         intent.putExtra("noFaceDetection", true);
         startActivityForResult(intent, REQUESTCODE_CUTTING);
     }
+
     private void setPicToView(Intent picdata) {
         Bundle extras = picdata.getExtras();
         if (extras != null) {
@@ -187,15 +200,16 @@ public class RegisterActivity extends BaseActivity {
             L.i("main", "setPicToView=" + photo);
 //            Drawable drawable = new BitmapDrawable(getResources(), photo);
 //            mIvUserinfoAvatar.setImageDrawable(drawable);
-                saveBitmapFile(photo);
+            saveBitmapFile(photo);
             L.i("main", "setPicToView=file" + file);
             ivGroupAvatar.setImageBitmap(photo);
         }
     }
+
     private File saveBitmapFile(Bitmap bitmap) {
         if (bitmap != null) {
             String imagePath = getAvatarPath(RegisterActivity.this, I.AVATAR_TYPE) + "/" + getAvatarName() + ".jpg";
-             file = new File(imagePath);//将要保存图片的路径
+            file = new File(imagePath);//将要保存图片的路径
             try {
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
@@ -208,6 +222,7 @@ public class RegisterActivity extends BaseActivity {
         }
         return null;
     }
+
     public static String getAvatarPath(Context context, String path) {
         File dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File folder = new File(dir, path);
@@ -216,8 +231,70 @@ public class RegisterActivity extends BaseActivity {
         }
         return folder.getAbsolutePath();
     }
+
     private String getAvatarName() {
-        avatarName = username.getText().toString() + System.currentTimeMillis();
+        avatarName = username + System.currentTimeMillis();
         return avatarName;
     }
+
+    @OnClick(R.id.register)
+    public void onRegisterClick() {
+        if (checkInput()) {
+            showDialog();
+            registerAppService();
+        }else{
+            dismissdialog();
+        }
+    }
+
+    private void registerAppService() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (LiveManager.getInstance().register(username, nickname, MD5.getMessageDigest(password), file)) {
+
+                        registerEMService();
+                    } else {
+                        dismissdialog();
+                        showLongToast("注册失败");
+                    }
+                } catch (LiveException e) {
+                    dismissdialog();
+                    showLongToast("注册失败：" + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
+
+    private boolean checkInput() {
+        username = userNameEditText.getText().toString().trim();
+        password = passwordEditText.getText().toString().trim();
+        nickname = userNickname.getText().toString().trim();
+        String confirm_pwd = confirmPwdEditText.getText().toString().trim();
+        if (TextUtils.isEmpty(username)) {
+            Toast.makeText(this, getResources().getString(R.string.User_name_cannot_be_empty), Toast.LENGTH_SHORT).show();
+            userNameEditText.requestFocus();
+            return false;
+        } else if (TextUtils.isEmpty(password)) {
+            Toast.makeText(this, getResources().getString(R.string.Password_cannot_be_empty), Toast.LENGTH_SHORT).show();
+            passwordEditText.requestFocus();
+            return false;
+        } else if (TextUtils.isEmpty(nickname)) {
+            Toast.makeText(this, getResources().getString(R.string.toast_nick_not_isnull), Toast.LENGTH_SHORT).show();
+            userNickname.requestFocus();
+            return false;
+        } else if (TextUtils.isEmpty(confirm_pwd)) {
+            Toast.makeText(this, getResources().getString(R.string.Confirm_password_cannot_be_empty), Toast.LENGTH_SHORT).show();
+            confirmPwdEditText.requestFocus();
+            return false;
+        } else if (!password.equals(confirm_pwd)) {
+            Toast.makeText(this, getResources().getString(R.string.Two_input_password), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
 }
