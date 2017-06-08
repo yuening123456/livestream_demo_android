@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,7 +17,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
+import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.MD5;
 
 import com.hyphenate.EMCallBack;
@@ -26,9 +30,8 @@ import com.hyphenate.chat.EMClient;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends BaseActivity {
-
-
-  // UI references.
+    public static final String TAG = "LoginActivity";
+    // UI references.
   private AutoCompleteTextView mEmailView;
   private EditText mPasswordView;
   private View mProgressView;
@@ -174,5 +177,14 @@ public class LoginActivity extends BaseActivity {
     }
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+      String usernName = LiveHelper.getInstance().getCurrentUsernName();
+      L.i("main"," LiveHelper.getInstance().getCurrentUsernName(), username="+usernName);
+      if(usernName!=null){
+          mEmailView.setText(usernName);
+      }
+  }
 }
 
