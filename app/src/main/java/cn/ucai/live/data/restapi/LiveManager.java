@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import cn.ucai.live.utils.L;
+import cn.ucai.live.utils.MD5;
 import cn.ucai.live.utils.ResultUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -363,29 +364,19 @@ public class LiveManager {
     private RequestBody jsonToRequestBody(String jsonStr) {
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
     }
-
-    User user = null;
-
-    public User register(String username, String nickname, String password, File file) {
+    public boolean register(String username, String nickname, String password, File file) throws LiveException {
 
         final RequestBody requestBody = RequestBody.create(MediaType.parse("application/otcet-stream"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("face", file.getName(), requestBody);
-        Call<String> call = liveService.register(username, nickname, password, part);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Result<User> result = ResultUtils.getResultFromJson(response.body(), User.class);
-                user = result.getRetData();
-
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
-            }
-        });
-        return user;
+        Call<String> stringCall = liveService.register(username, nickname, password, part);
+        Result<User> result = handleResponseCallToResult(stringCall,User.class);
+        return result.isRetMsg();
+    }
+    public boolean register(String username, String nickname, String password) throws LiveException {
+        Call<String> stringCall = liveService.register(username, nickname, password);
+        Result<User> result = handleResponseCallToResult(stringCall,User.class);
+        return result.isRetMsg();
     }
 
     public User loadUserInfo(String username) throws LiveException {
@@ -393,7 +384,7 @@ public class LiveManager {
         Result<User> result = handleResponseCallToResult(stringCall, User.class);
         return result.getRetData();
     }
-    public Boolean unRegister(String username) throws LiveException {
+    public boolean unRegister(String username) throws LiveException {
         Call<String> stringCall = liveService.unRegister(username);
         Result<Result> result = handleResponseCallToResult(stringCall, Result.class);
         return result.isRetMsg();
