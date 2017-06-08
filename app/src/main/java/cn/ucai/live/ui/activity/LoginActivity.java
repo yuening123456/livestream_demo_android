@@ -123,6 +123,7 @@ public class LoginActivity extends BaseActivity {
       showProgress(true);
       EMClient.getInstance().login(email.toString(), MD5.getMessageDigest(password.toString()), new EMCallBack() {
         @Override public void onSuccess() {
+            LiveHelper.getInstance().syncUserInfo();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
