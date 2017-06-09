@@ -1,12 +1,6 @@
 package cn.ucai.live;
 
 import android.app.Application;
-import android.content.Intent;
-import cn.ucai.live.ui.activity.MainActivity;
-import com.hyphenate.EMConnectionListener;
-import com.hyphenate.EMError;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.easeui.controller.EaseUI;
 import com.ucloud.ulive.UStreamingContext;
 
 /**
@@ -25,7 +19,6 @@ public class LiveApplication extends Application{
     initChatSdk();
 
     //UEasyStreaming.initStreaming("publish3-key");
-
     UStreamingContext.init(getApplicationContext(), "publish3-key");
   }
 
@@ -39,25 +32,8 @@ public class LiveApplication extends Application{
     //options.setRestServer("103.241.230.122:31080");
     //options.setIMServer("103.241.230.122");
     //options.setImPort(31097);
+    LiveHelper.getInstance().init(this);
 
-    EaseUI.getInstance().init(this, null);
-    EMClient.getInstance().setDebugMode(true);
-
-    EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
-      @Override public void onConnected() {
-
-      }
-
-      @Override public void onDisconnected(int errorCode) {
-        if(errorCode == EMError.USER_LOGIN_ANOTHER_DEVICE)
-        {
-          Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          intent.putExtra("conflict", true);
-          startActivity(intent);
-        }
-      }
-    });
   }
 
 }

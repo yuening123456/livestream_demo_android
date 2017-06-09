@@ -2,18 +2,19 @@ package cn.ucai.live.data.restapi;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.widget.EditText;
 
-import cn.hyphenate.easeui.domain.User;
 import cn.ucai.live.I;
 import cn.ucai.live.LiveApplication;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.model.Result;
+
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 import cn.ucai.live.data.restapi.model.StatisticsType;
 
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.model.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -384,9 +384,15 @@ public class LiveManager {
         Result<User> result = handleResponseCallToResult(stringCall, User.class);
         return result.getRetData();
     }
-    public boolean unRegister(String username) throws LiveException {
+    public void unRegister(String username) throws LiveException {
         Call<String> stringCall = liveService.unRegister(username);
         Result<Result> result = handleResponseCallToResult(stringCall, Result.class);
-        return result.isRetMsg();
+
     }
+    public List<Gift> getAllGifts() throws LiveException {
+        Call<String> stringCall = liveService.getAllGifts();
+        Result<List<Gift>> result = handleResponseCallToResultList(stringCall, Gift.class);
+        return  result.getRetData();
+    }
+
 }

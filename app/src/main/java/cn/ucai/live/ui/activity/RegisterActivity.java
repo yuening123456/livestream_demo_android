@@ -83,7 +83,6 @@ public class RegisterActivity extends BaseActivity {
                     pd.dismiss();
                     LiveHelper.getInstance().setCurrentUserName(username);
                     showToast("注册成功");
-
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
                 }

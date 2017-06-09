@@ -4,22 +4,26 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import cn.ucai.live.utils.L;
+
 /**
  * Created by Administrator on 2017/6/9 0009.
  */
 
 public class LiveDBOpenHelper extends SQLiteOpenHelper {
+    private static final String TAG = "LiveDBOpenHelper";
     private static final int versionNumber = 1;
     private static LiveDBOpenHelper instance;
     private static final String GIFT_TABLE_CREATE = "CREATE TABLE "
             + LiveDao.GIFT_TABLE_NAME + " ("
             + LiveDao.GIFT_COLUME_NAME + " TEXT, "
             + LiveDao.GIFT_COLUME_URL + " TEXT, "
-            + LiveDao.GIFT_COLUME_PRICE + " INTEGER "
+            + LiveDao.GIFT_COLUME_PRICE + " INTEGER, "
             + LiveDao.GIFT_COLUME_ID + " TEXT PRIMARY KEY);";
 
     public LiveDBOpenHelper(Context context) {
         super(context, getDatabaseNames(context), null, versionNumber);
+        L.e(TAG,"LiveDBOpenHelper...");
     }
 
     private static String getDatabaseNames(Context context) {

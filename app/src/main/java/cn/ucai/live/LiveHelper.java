@@ -1,5 +1,6 @@
 package cn.ucai.live;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
@@ -12,9 +13,19 @@ import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.easeui.model.User;
 import com.hyphenate.util.EMLog;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import cn.ucai.live.data.local.LiveDBManager;
+import cn.ucai.live.data.local.LiveDBOpenHelper;
+import cn.ucai.live.data.local.LiveDao;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.activity.MainActivity;
+import cn.ucai.live.utils.L;
 
 
 /**
@@ -28,6 +39,7 @@ public class LiveHelper {
     private LiveModel model;
     private static LiveHelper instance = null;
     private User currentAppUser= null;
+    private Map<Integer, Gift> giftMap;
     private LiveHelper() {
     }
     public void init(Context context) {
@@ -35,7 +47,7 @@ public class LiveHelper {
         appContext=context;
         EaseUI.getInstance().init(context, null);
         EMClient.getInstance().setDebugMode(true);
-
+        getGiftListFromServer();
         EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
             @Override public void onConnected() {
 
@@ -100,7 +112,7 @@ public class LiveHelper {
     }
 
     private void setCurrentAppUserAvatar(String avatar) {
-            getCurrentAppUserInfo().setAvatar(avatar);
+        getCurrentAppUserInfo().setAvatar(avatar);
          EasePreferenceManager.getInstance().setCurrentUserAvatar(avatar);
     }
 
@@ -130,4 +142,56 @@ public class LiveHelper {
         currentAppUser = null;
         EasePreferenceManager.getInstance().removeCurrentUserInfo();
     }
+    public void setGiftList(Map<Integer, Gift> list) {
+
+        if(list == null){
+            if (giftMap != null) {
+                giftMap.clear();
+            }
+            return;
+        }
+
+        giftMap = list;
+    }
+
+    public Map<Integer,Gift> getGiftList() {
+        if ( giftMap == null) {
+            giftMap = model.getGiftList();
+        }
+        // return a empty non-null object to avoid app crash
+        if(giftMap == null){
+            return new Hashtable<Integer, Gift>();
+        }
+        return giftMap;
+    }
+    public void getGiftListFromServer() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                L.e(TAG, "getGiftListFromServer ....");
+                getGiftList().clear();
+                    try {
+                        List<Gift> list = LiveManager.getInstance().getAllGifts();
+                        L.e(TAG, "getGiftListFromServer ....list=" + list);
+                        if (list != null) {
+                            Map<Integer, Gift> map = new HashMap<Integer, Gift>();
+                            for (Gift gift : list) {
+                                map.put(gift.getId(), gift);
+                            }
+                            setGiftList(map);
+                            LiveDao dao = new LiveDao();
+                            dao.saveGiftList(list);
+                        }
+                    } catch (LiveException e) {
+                        e.printStackTrace();
+                    }
+
+            }
+        }).start();
+
+    }
+
+
+
 }
