@@ -7,19 +7,21 @@ import android.database.sqlite.SQLiteOpenHelper;
 import cn.ucai.live.utils.L;
 
 /**
- * Created by Administrator on 2017/6/9 0009.
+ * Created by clawpo on 2017/6/9.
  */
 
 public class LiveDBOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = "LiveDBOpenHelper";
+
     private static final int versionNumber = 1;
     private static LiveDBOpenHelper instance;
+
     private static final String GIFT_TABLE_CREATE = "CREATE TABLE "
             + LiveDao.GIFT_TABLE_NAME + " ("
-            + LiveDao.GIFT_COLUME_NAME + " TEXT, "
-            + LiveDao.GIFT_COLUME_URL + " TEXT, "
-            + LiveDao.GIFT_COLUME_PRICE + " INTEGER, "
-            + LiveDao.GIFT_COLUME_ID + " TEXT PRIMARY KEY);";
+            + LiveDao.GIFT_COLUMN_NAME + " TEXT, "
+            + LiveDao.GIFT_COLUMN_URL + " TEXT, "
+            + LiveDao.GIFT_COLUMN_PRICE + " INTEGER, "
+            + LiveDao.GIFT_COLUMN_ID + " INTEGER PRIMARY KEY);";
 
     public LiveDBOpenHelper(Context context) {
         super(context, getDatabaseNames(context), null, versionNumber);
@@ -27,8 +29,20 @@ public class LiveDBOpenHelper extends SQLiteOpenHelper {
     }
 
     private static String getDatabaseNames(Context context) {
-        return context.getPackageName() + ".db";
+        return context.getPackageName()+".db";
     }
+
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        L.e(TAG,"LiveDBOpenHelper...onCreate");
+        sqLiteDatabase.execSQL(GIFT_TABLE_CREATE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+    }
+
 
     public static LiveDBOpenHelper getInstance(Context context) {
         if (instance == null) {
@@ -37,15 +51,6 @@ public class LiveDBOpenHelper extends SQLiteOpenHelper {
         return instance;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(GIFT_TABLE_CREATE);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
     public void closeDB() {
         if (instance != null) {
             try {

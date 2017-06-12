@@ -253,7 +253,7 @@ public class RegisterActivity extends BaseActivity {
             public void run() {
                 try {
                     if(file==null){
-                        b = LiveManager.getInstance().register(username, nickname, MD5.getMessageDigest(password));
+                        //b = LiveManager.getInstance().register(username, nickname, MD5.getMessageDigest(password));
                     }else{
                         b=LiveManager.getInstance().register(username, nickname, MD5.getMessageDigest(password), file);
                     }

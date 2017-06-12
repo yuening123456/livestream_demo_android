@@ -13,16 +13,16 @@ import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.utils.L;
 
 /**
- * Created by Administrator on 2017/6/9 0009.
+ * Created by clawpo on 2017/6/9.
  */
 
 public class LiveDBManager {
     private static final String TAG = "LiveDBManager";
-    static private LiveDBManager dbMgr = new LiveDBManager();
+    private static LiveDBManager dbMgr = new LiveDBManager();
     private LiveDBOpenHelper dbHelper;
 
     private LiveDBManager(){
-        L.e(TAG,"LiveDBManager()...");
+        L.e(TAG,"LiveDBManager init dbhelper");
         dbHelper = LiveDBOpenHelper.getInstance(LiveApplication.getInstance().getApplicationContext());
     }
 
@@ -32,20 +32,26 @@ public class LiveDBManager {
         }
         return dbMgr;
     }
+
+    /**
+     * save gift list
+     *
+     * @param list
+     */
     synchronized public void saveGiftList(List<Gift> list) {
-        L.e(TAG,"LiveDBManager...saveGiftList..");
+        L.e(TAG,"saveGiftList to databases");
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         if (db.isOpen()) {
             db.delete(LiveDao.GIFT_TABLE_NAME, null, null);
-            for (Gift gift : list) {
+            for (Gift gift:list) {
                 ContentValues values = new ContentValues();
-                values.put(LiveDao.GIFT_COLUME_ID, gift.getId());
+                values.put(LiveDao.GIFT_COLUMN_ID, gift.getId());
                 if(gift.getGname() != null)
-                    values.put(LiveDao.GIFT_COLUME_NAME, gift.getGname());
+                    values.put(LiveDao.GIFT_COLUMN_NAME, gift.getGname());
                 if(gift.getGurl() != null)
-                    values.put(LiveDao.GIFT_COLUME_URL, gift.getGurl());
+                    values.put(LiveDao.GIFT_COLUMN_URL, gift.getGurl());
                 if(gift.getGprice() != null)
-                    values.put(LiveDao.GIFT_COLUME_PRICE, gift.getGprice());
+                    values.put(LiveDao.GIFT_COLUMN_PRICE, gift.getGprice());
                 db.replace(LiveDao.GIFT_TABLE_NAME, null, values);
             }
         }
@@ -62,21 +68,19 @@ public class LiveDBManager {
         if (db.isOpen()) {
             Cursor cursor = db.rawQuery("select * from " + LiveDao.GIFT_TABLE_NAME /* + " desc" */, null);
             while (cursor.moveToNext()) {
-                int giftId = cursor.getInt(cursor.getColumnIndex(LiveDao.GIFT_COLUME_ID));
-                String giftName = cursor.getString(cursor.getColumnIndex(LiveDao.GIFT_TABLE_NAME));
-                String giftUrl = cursor.getString(cursor.getColumnIndex(LiveDao.GIFT_COLUME_URL));
-                int giftPrice = cursor.getInt(cursor.getColumnIndex(LiveDao.GIFT_COLUME_PRICE));
+                int giftId = cursor.getInt(cursor.getColumnIndex(LiveDao.GIFT_COLUMN_ID));
+                String giftName = cursor.getString(cursor.getColumnIndex(LiveDao.GIFT_COLUMN_NAME));
+                String giftUrl = cursor.getString(cursor.getColumnIndex(LiveDao.GIFT_COLUMN_URL));
+                int giftPrice = cursor.getInt(cursor.getColumnIndex(LiveDao.GIFT_COLUMN_PRICE));
                 Gift gift = new Gift();
                 gift.setId(giftId);
                 gift.setGname(giftName);
                 gift.setGurl(giftUrl);
                 gift.setGprice(giftPrice);
-
                 gifts.put(giftId, gift);
             }
             cursor.close();
         }
         return gifts;
     }
-
 }

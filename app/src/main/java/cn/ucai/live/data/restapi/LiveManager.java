@@ -3,25 +3,25 @@ package cn.ucai.live.data.restapi;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
-import cn.ucai.live.I;
-import cn.ucai.live.LiveApplication;
-import cn.ucai.live.data.model.Gift;
-import cn.ucai.live.data.model.LiveRoom;
-import cn.ucai.live.data.model.Result;
-
-import cn.ucai.live.data.restapi.model.LiveStatusModule;
-import cn.ucai.live.data.restapi.model.ResponseModule;
-import cn.ucai.live.data.restapi.model.StatisticsType;
-
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.model.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import cn.ucai.live.I;
+import cn.ucai.live.LiveApplication;
+import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.data.model.LiveRoom;
+import cn.ucai.live.data.model.Result;
+import cn.ucai.live.data.restapi.model.LiveStatusModule;
+import cn.ucai.live.data.restapi.model.ResponseModule;
+import cn.ucai.live.data.restapi.model.StatisticsType;
 import cn.ucai.live.utils.L;
-import cn.ucai.live.utils.MD5;
 import cn.ucai.live.utils.ResultUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -30,10 +30,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -48,14 +44,15 @@ public class LiveManager {
     private String appkey;
     private ApiService apiService;
     private LiveService liveService;
+
     private static LiveManager instance;
 
-    private LiveManager() {
+    private LiveManager(){
         try {
             ApplicationInfo appInfo = LiveApplication.getInstance().getPackageManager().getApplicationInfo(
                     LiveApplication.getInstance().getPackageName(), PackageManager.GET_META_DATA);
             appkey = appInfo.metaData.getString("EASEMOB_APPKEY");
-            appkey = appkey.replace("#", "/");
+            appkey = appkey.replace("#","/");
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException("must set the easemob appkey");
         }
@@ -68,27 +65,30 @@ public class LiveManager {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://a1.easemob.com/" + appkey + "/")
+                .baseUrl("http://a1.easemob.com/"+appkey+"/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient)
                 .build();
 
         apiService = retrofit.create(ApiService.class);
 
-        Retrofit retrofit2 = new Retrofit.Builder()
+        Retrofit liveRetrofit = new Retrofit.Builder()
                 .baseUrl(I.SERVER_ROOT)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(httpClient)
                 .build();
-        liveService = retrofit2.create(LiveService.class);
+        liveService = liveRetrofit.create(LiveService.class);
 
+    }
+
+    public List<Gift> loadGiftList() throws LiveException {
+        return handleResponseCallToResultList(liveService.getAllGifts(), Gift.class).getRetData();
     }
 
 
     static class RequestInterceptor implements Interceptor {
 
-        @Override
-        public okhttp3.Response intercept(Chain chain) throws IOException {
+        @Override public okhttp3.Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
             Request request = original.newBuilder()
                     .header("Authorization", "Bearer " + EMClient.getInstance().getAccessToken())
@@ -96,13 +96,13 @@ public class LiveManager {
                     .header("Content-Type", "application/json")
                     .method(original.method(), original.body())
                     .build();
-            okhttp3.Response response = chain.proceed(request);
+            okhttp3.Response response =  chain.proceed(request);
             return response;
         }
     }
 
-    public static LiveManager getInstance() {
-        if (instance == null) {
+    public static LiveManager getInstance(){
+        if(instance == null){
             instance = new LiveManager();
         }
         return instance;
@@ -110,10 +110,9 @@ public class LiveManager {
 
     /**
      * 创建直播室
-     *
-     * @param name        直播室名称
+     * @param name 直播室名称
      * @param description 直播室描述
-     * @param coverUrl    直播封面图片url
+     * @param coverUrl 直播封面图片url
      * @return
      * @throws LiveException
      */
@@ -123,11 +122,10 @@ public class LiveManager {
 
     /**
      * 根据指定的已经关联的直播室id创建直播
-     *
-     * @param name        直播室名称
+     * @param name 直播室名称
      * @param description 直播室描述
-     * @param coverUrl    直播封面图片url
-     * @param liveRoomId  要关联直播的直播室id
+     * @param coverUrl 直播封面图片url
+     * @param liveRoomId 要关联直播的直播室id
      * @return
      * @throws LiveException
      */
@@ -143,17 +141,17 @@ public class LiveManager {
         liveRoom.setCover(coverUrl);
 
         Call<ResponseModule<LiveRoom>> responseCall;
-        if (liveRoomId != null) {
+        if(liveRoomId != null){
             responseCall = apiService.createLiveShow(liveRoomId, liveRoom);
 
-        } else {
+        }else {
             responseCall = apiService.createLiveRoom(liveRoom);
         }
         ResponseModule<LiveRoom> response = handleResponseCall(responseCall).body();
         LiveRoom room = response.data;
-        if (room.getId() != null) {
+        if(room.getId() != null) {
             liveRoom.setId(room.getId());
-        } else {
+        }else {
             liveRoom.setId(liveRoomId);
         }
         liveRoom.setChatroomId(room.getChatroomId());
@@ -165,7 +163,6 @@ public class LiveManager {
 
     /**
      * 更新直播室封面
-     *
      * @param roomId
      * @param coverUrl
      * @throws LiveException
@@ -184,6 +181,7 @@ public class LiveManager {
     }
 
 
+
     //public void joinLiveRoom(String roomId, String userId) throws LiveException {
     //    JSONObject jobj = new JSONObject();
     //    String[] arr = new String[]{userId};
@@ -197,6 +195,7 @@ public class LiveManager {
     //}
 
 
+
     //public void updateLiveRoom(LiveRoom liveRoom) throws LiveException {
     //    Call respCall = apiService.updateLiveRoom(liveRoom.getId(), liveRoom);
     //    handleResponseCall(respCall);
@@ -204,7 +203,6 @@ public class LiveManager {
 
     /**
      * 获取直播室直播状态
-     *
      * @param roomId
      * @return
      * @throws LiveException
@@ -216,7 +214,6 @@ public class LiveManager {
 
     /**
      * 结束直播
-     *
      * @param roomId
      * @throws LiveException
      */
@@ -240,8 +237,7 @@ public class LiveManager {
 
     /**
      * 获取正在直播的直播室列表
-     *
-     * @param limit  取多少
+     * @param limit 取多少
      * @param cursor 在这个游标基础上取数据，首次获取传null
      * @return
      * @throws LiveException
@@ -256,7 +252,6 @@ public class LiveManager {
 
     /**
      * 获取直播间详情
-     *
      * @param roomId
      * @return
      * @throws LiveException
@@ -267,7 +262,6 @@ public class LiveManager {
 
     /**
      * 获取用户已经关联的直播间
-     *
      * @param userId
      * @return
      * @throws LiveException
@@ -321,10 +315,10 @@ public class LiveManager {
     //    handleResponseCall(apiService.postStatistics(roomId, jsonToRequestBody(jobj.toString())));
     //}
 
-    private <T> Response<T> handleResponseCall(Call<T> responseCall) throws LiveException {
+    private <T> Response<T> handleResponseCall(Call<T> responseCall) throws LiveException{
         try {
             Response<T> response = responseCall.execute();
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 throw new LiveException(response.code(), response.errorBody().string());
             }
             return response;
@@ -333,11 +327,11 @@ public class LiveManager {
         }
     }
 
-    private <T> Result<T> handleResponseCallToResult(Call<String> call, Class<T> clazz) throws LiveException {
+    private <T> Result<T>handleResponseCallToResult(Call<String> call,Class<T> clazz) throws LiveException{
         try {
             Response<String> response = call.execute();
-            L.e("manager", "response=" + response);
-            if (!response.isSuccessful()) {
+            L.e("manager","response="+response);
+            if(!response.isSuccessful()){
                 throw new LiveException(response.code(), response.errorBody().string());
             }
             String body = response.body();
@@ -347,10 +341,10 @@ public class LiveManager {
         }
     }
 
-    private <T> Result<List<T>> handleResponseCallToResultList(Call<String> call, Class<T> clazz) throws LiveException {
+    private <T> Result<List<T>> handleResponseCallToResultList(Call<String> call, Class<T> clazz) throws LiveException{
         try {
             Response<String> response = call.execute();
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 throw new LiveException(response.code(), response.errorBody().string());
             }
             String body = response.body();
@@ -360,23 +354,8 @@ public class LiveManager {
         }
     }
 
-
-    private RequestBody jsonToRequestBody(String jsonStr) {
+    private RequestBody jsonToRequestBody(String jsonStr){
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
-    }
-    public boolean register(String username, String nickname, String password, File file) throws LiveException {
-
-        final RequestBody requestBody = RequestBody.create(MediaType.parse("application/otcet-stream"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-
-        Call<String> stringCall = liveService.register(username, nickname, password, part);
-        Result<User> result = handleResponseCallToResult(stringCall,User.class);
-        return result.isRetMsg();
-    }
-    public boolean register(String username, String nickname, String password) throws LiveException {
-        Call<String> stringCall = liveService.register(username, nickname, password);
-        Result<User> result = handleResponseCallToResult(stringCall,User.class);
-        return result.isRetMsg();
     }
 
     public User loadUserInfo(String username) throws LiveException {
@@ -384,15 +363,15 @@ public class LiveManager {
         Result<User> result = handleResponseCallToResult(stringCall, User.class);
         return result.getRetData();
     }
-    public void unRegister(String username) throws LiveException {
-        Call<String> stringCall = liveService.unRegister(username);
-        Result<Result> result = handleResponseCallToResult(stringCall, Result.class);
 
-    }
-    public List<Gift> getAllGifts() throws LiveException {
-        Call<String> stringCall = liveService.getAllGifts();
-        Result<List<Gift>> result = handleResponseCallToResultList(stringCall, Gift.class);
-        return  result.getRetData();
+    public boolean register(String username,String nickname,String password,File file) throws LiveException {
+        RequestBody body = RequestBody.create(MediaType.parse("application/form-data"),file);
+        MultipartBody.Part partFile = MultipartBody.Part.createFormData("file",file.getName(),body);
+        Result<User> result = handleResponseCallToResult(liveService.register(username, nickname, password, partFile), User.class);
+        return result.isRetMsg();
     }
 
+    public boolean unRegister(String username) throws LiveException {
+        return handleResponseCallToResult(liveService.unregister(username),User.class).isRetMsg();
+    }
 }

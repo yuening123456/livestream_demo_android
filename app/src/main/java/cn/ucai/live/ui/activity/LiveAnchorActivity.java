@@ -117,7 +117,7 @@ public class LiveAnchorActivity extends LiveBaseActivity {
      * 切换摄像头
      */
     @OnClick(R.id.switch_camera_image) void switchCamera() {
-        //mEasyStreaming.switchCamera();
+       //mEasyStreaming.switchCamera();
         cameraView.switchCamera();
     }
 
