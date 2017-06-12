@@ -17,6 +17,7 @@ import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.ucloud.ulive.UFilterProfile;
 import com.ucloud.ulive.UNetworkListener;
 import com.ucloud.ulive.UStreamStateListener;
@@ -172,8 +173,11 @@ public class LiveAnchorActivity extends LiveBaseActivity {
         TextView usernameView = (TextView) liveEndView.findViewById(R.id.tv_username);
         ImageView closeConfirmView =
                 (ImageView) liveEndView.findViewById(R.id.img_finish_confirmed);
+        ImageView userAvatar= (ImageView) liveEndView.findViewById(R.id.anchor_avatar);
         TextView watchedCountView = (TextView) liveEndView.findViewById(R.id.txt_watched_count);
-        usernameView.setText(EMClient.getInstance().getCurrentUser());
+        //usernameView.setText(EMClient.getInstance().getCurrentUser());
+        EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
+        EaseUserUtils.setAppUserAvatar(LiveAnchorActivity.this,EMClient.getInstance().getCurrentUser(),userAvatar);
         watchedCountView.setText(watchedCount + "人看过");
 
         liveContinueBtn.setOnClickListener(new View.OnClickListener() {
