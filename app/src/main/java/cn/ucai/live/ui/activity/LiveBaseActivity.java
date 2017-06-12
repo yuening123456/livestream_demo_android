@@ -101,6 +101,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         chatroomId = liveRoom.getChatroomId();
         anchorId = liveRoom.getAnchorId();
         onActivityCreate(savedInstanceState);
+        //EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,anchorId,useravatarView);
         //loadanchorUserInfo
         loadAnchor(anchorId);
         intAnchorInfo();
@@ -536,11 +537,12 @@ public abstract class LiveBaseActivity extends BaseActivity {
                     showUserDetailsDialog(namelist.get(position));
                 }
             });
+            EaseUserUtils.setAppUserAvatar(context,namelist.get(position),holder.Avatar);
             //暂时使用测试数据
-            Glide.with(context)
+           /* Glide.with(context)
                     .load(avatarRepository.getAvatar())
                     .placeholder(R.drawable.ease_default_avatar)
-                    .into(holder.Avatar);
+                    .into(holder.Avatar);*/
         }
 
         @Override public int getItemCount() {
