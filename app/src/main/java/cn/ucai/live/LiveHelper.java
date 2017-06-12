@@ -36,6 +36,7 @@ public class LiveHelper {
 
     private static LiveHelper instance = null;
     private String username;
+    private Map<String, User> appContactList;
     LiveModel model = null;
     private User currentAppUser= null;
     private Map<Integer,Gift> giftMap;
@@ -99,7 +100,7 @@ public class LiveHelper {
         User user = null;
         if(username.equals(EMClient.getInstance().getCurrentUser()))
             return getCurrentAppUserInfo();
-//        user = getAppContactList().get(username);
+         user = getAppContactList().get(username);
 //
         // if user is not in your contacts, set inital letter for him/her
         if(user == null){
@@ -109,6 +110,16 @@ public class LiveHelper {
         return user;
     }
 
+    public Map<String,User> getAppContactList() {
+        if(appContactList == null){
+            appContactList=new Hashtable<String, User>();
+        }
+
+        return appContactList;
+    }
+    public void saveAppContact(User user){
+        appContactList.put(user.getMUserName(), user);
+    }
     /**
      * user met some exception: conflict, removed or forbidden
      */
@@ -244,6 +255,6 @@ public class LiveHelper {
                 }
             }
         }).start();
-
     }
+
 }
