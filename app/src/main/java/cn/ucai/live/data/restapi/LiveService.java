@@ -101,6 +101,12 @@ public interface LiveService {
             @Query(I.User.NICK) String nickname,
             @Query(I.User.PASSWORD) String password,
             @Part MultipartBody.Part file);
+    @Multipart
+    @POST("register")
+    Call<String> register(
+            @Query(I.User.USER_NAME) String username,
+            @Query(I.User.NICK) String nickname,
+            @Query(I.User.PASSWORD) String password);
 
     /** 取消注册用户 */
     @GET("unregister")
