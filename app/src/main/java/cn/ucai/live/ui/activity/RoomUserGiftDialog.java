@@ -20,16 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.hyphenate.easeui.model.User;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +45,8 @@ public class RoomUserGiftDialog extends DialogFragment {
     TextView tvRecharge;
     Unbinder unbinder;
     GiftAdapter adapter;
-
+    static List<Gift> giftLists;
+    View.OnClickListener onClickListener;
     public RoomUserGiftDialog() {
 
     }
@@ -60,9 +54,14 @@ public class RoomUserGiftDialog extends DialogFragment {
 
     public static RoomUserGiftDialog newInstance() {
         RoomUserGiftDialog dialog = new RoomUserGiftDialog();
+        if(giftLists!=null){
+            giftLists.clear();
+        }
         return dialog;
     }
-
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -82,11 +81,12 @@ public class RoomUserGiftDialog extends DialogFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        List<Gift> giftLists= LiveHelper.getInstance().getGiftLists();
+        giftLists= LiveHelper.getInstance().getGiftLists();
         initView();
         initData(giftLists);
 
     }
+
 
     private void initView() {
         GridLayoutManager gm=new GridLayoutManager(getActivity(), I.GIFT_COLUMN_COUNT);
@@ -124,11 +124,15 @@ public class RoomUserGiftDialog extends DialogFragment {
             holder.tvGiftName.setText(s.getGname());
             holder.tvGiftPrice.setText("￥"+s.getGprice());
             EaseUserUtils.setAppGiftAvatar(context,s.getGurl(),holder.ivGiftThumb);
+            holder.itemView.setTag(s.getId());
+            holder.itemView.setOnClickListener(onClickListener);
+
         }
 
         @Override
         public int getItemCount() {
             return giftList.size();
+
         }
 
 
