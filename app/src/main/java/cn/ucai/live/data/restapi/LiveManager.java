@@ -16,6 +16,7 @@ import java.util.List;
 import cn.ucai.live.I;
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.data.model.GiftStatements;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.model.Result;
 import cn.ucai.live.data.model.Wallet;
@@ -47,6 +48,27 @@ public class LiveManager {
     private LiveService liveService;
 
     private static LiveManager instance;
+    /**
+     * id : 671
+     * uname : 123yuening
+     * anchor : 010aa
+     * giftid : 1
+     * giftnum : 1
+     * gdate : 1497411120147
+     * gname : 红包
+     * gurl : hani_gift_1.png
+     * gprice : 1
+     */
+
+    private int id;
+    private String uname;
+    private String anchor;
+    private int giftid;
+    private int giftnum;
+    private String gdate;
+    private String gname;
+    private String gurl;
+    private int gprice;
 
     private LiveManager(){
         try {
@@ -84,6 +106,78 @@ public class LiveManager {
 
     public List<Gift> loadGiftList() throws LiveException {
         return handleResponseCallToResultList(liveService.getAllGifts(), Gift.class).getRetData();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUname() {
+        return uname;
+    }
+
+    public void setUname(String uname) {
+        this.uname = uname;
+    }
+
+    public String getAnchor() {
+        return anchor;
+    }
+
+    public void setAnchor(String anchor) {
+        this.anchor = anchor;
+    }
+
+    public int getGiftid() {
+        return giftid;
+    }
+
+    public void setGiftid(int giftid) {
+        this.giftid = giftid;
+    }
+
+    public int getGiftnum() {
+        return giftnum;
+    }
+
+    public void setGiftnum(int giftnum) {
+        this.giftnum = giftnum;
+    }
+
+    public String getGdate() {
+        return gdate;
+    }
+
+    public void setGdate(String gdate) {
+        this.gdate = gdate;
+    }
+
+    public String getGname() {
+        return gname;
+    }
+
+    public void setGname(String gname) {
+        this.gname = gname;
+    }
+
+    public String getGurl() {
+        return gurl;
+    }
+
+    public void setGurl(String gurl) {
+        this.gurl = gurl;
+    }
+
+    public int getGprice() {
+        return gprice;
+    }
+
+    public void setGprice(int gprice) {
+        this.gprice = gprice;
     }
 
 
@@ -387,5 +481,8 @@ public class LiveManager {
     }
     public Result<Wallet> getRecharge(String username,int rmb) throws LiveException {
         return handleResponseCallToResult(liveService.recharge(username,rmb),Wallet.class);
+    }
+    public Result<List<GiftStatements>> givingGiftStatements(String username, int pageId, int pageSize) throws LiveException {
+        return handleResponseCallToResultList(liveService.getGivingGiftStatements(username,pageId,pageSize),GiftStatements.class);
     }
 }

@@ -107,7 +107,7 @@
           android:background="@color/common_white" />
 
       <TextView
-          android:id="@+id/userPrice"
+          android:id="@+id/price_layout"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="6dp"
@@ -116,7 +116,7 @@
           android:textSize="16sp" />
 
       <TextView
-
+          android:id="@+id/userPrice"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
@@ -144,55 +144,40 @@
         />
 
   </RelativeLayout>
-  <!--  <RelativeLayout
-        android:layout_marginTop="20dp"
+  <LinearLayout
+      android:layout_marginTop="10dp"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/item_normal_height"
+      android:background="@drawable/common_white_btn_bg"
+      android:clickable="true"
+      >
+    <TextView
+        android:id="@+id/giving_gift"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/common_black"
+        android:text="送礼物流水"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="直播码率"
-            android:textSize="18sp"
-            android:textColor="#aa000000"
-            />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/bitrate_types"
-            android:layout_alignParentRight="true"
-            />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/frame_rate_container"
+        />
+    <TextView
+        android:id="@+id/recy_gift"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/common_black"
+        android:text="收礼物流水"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="直播帧率"
-            android:textSize="18sp"
-            android:textColor="#aa000000"
-            />
+        />
 
-        <TextView
-            android:id="@+id/frame_rate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:layout_alignParentRight="true"
-            android:text="@string/pref_default_video_frame_rate"
-            />
-    </RelativeLayout>
--->
+  </LinearLayout>
+
   <Button
       android:id="@+id/btn_logout"
       android:layout_width="match_parent"

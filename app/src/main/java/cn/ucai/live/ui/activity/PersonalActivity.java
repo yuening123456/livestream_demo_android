@@ -79,7 +79,7 @@ public class PersonalActivity extends BaseActivity {
     }
 
     @OnClick(R.id.price_layout)
-    public void onViewClicked() {
+    public void priceOnClick() {
         RechargeDialog dialog = RechargeDialog.newInstance();
         dialog.show(getSupportFragmentManager(), "RoomUserGiftDialog");
         dialog.setClickListener(new View.OnClickListener() {
@@ -115,7 +115,7 @@ public class PersonalActivity extends BaseActivity {
     public void exitClick() {
         finish();
         startLogin();
-       // startActivity(new Intent(PersonalActivity.this,LoginActivity.class));
+        // startActivity(new Intent(PersonalActivity.this,LoginActivity.class));
     }
 
     private void startLogin() {
@@ -139,4 +139,15 @@ public class PersonalActivity extends BaseActivity {
         });
     }
 
+    @OnClick({R.id.giving_gift, R.id.recy_gift})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.giving_gift:
+                GivingDialog dialog = GivingDialog.newInstance();
+                dialog.show(getSupportFragmentManager(), "RoomUserGiftDialog");
+                break;
+            case R.id.recy_gift:
+                break;
+        }
+    }
 }

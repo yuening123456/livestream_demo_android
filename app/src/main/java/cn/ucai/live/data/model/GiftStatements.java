@@ -1,23 +1,35 @@
 package cn.ucai.live.data.model;
 
 public class GiftStatements {
-    private Integer id;
 
+
+    /**
+     * id : 671
+     * uname : 123yuening
+     * anchor : 010aa
+     * giftid : 1
+     * giftnum : 1
+     * gdate : 1497411120147
+     * gname : 红包
+     * gurl : hani_gift_1.png
+     * gprice : 1
+     */
+
+    private int id;
     private String uname;
-
     private String anchor;
-
-    private Integer giftid;
-
-    private Integer giftnum;
-    
+    private int giftid;
+    private int giftnum;
     private String gdate;
-    
-    public Integer getId() {
+    private String gname;
+    private String gurl;
+    private int gprice;
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -26,7 +38,7 @@ public class GiftStatements {
     }
 
     public void setUname(String uname) {
-        this.uname = uname == null ? null : uname.trim();
+        this.uname = uname;
     }
 
     public String getAnchor() {
@@ -34,31 +46,69 @@ public class GiftStatements {
     }
 
     public void setAnchor(String anchor) {
-        this.anchor = anchor == null ? null : anchor.trim();
+        this.anchor = anchor;
     }
 
-    public Integer getGiftid() {
+    public int getGiftid() {
         return giftid;
     }
 
-    public void setGiftid(Integer giftid) {
+    public void setGiftid(int giftid) {
         this.giftid = giftid;
     }
 
-    public Integer getGiftnum() {
+    public int getGiftnum() {
         return giftnum;
     }
 
-    public void setGiftnum(Integer giftnum) {
+    public void setGiftnum(int giftnum) {
         this.giftnum = giftnum;
     }
 
-	public String getGdate() {
-		return gdate;
-	}
+    public String getGdate() {
+        return gdate;
+    }
 
-	public void setGdate(String gdate) {
-		this.gdate = gdate;
-	}
-    
+    public void setGdate(String gdate) {
+        this.gdate = gdate;
+    }
+
+    public String getGname() {
+        return gname;
+    }
+
+    public void setGname(String gname) {
+        this.gname = gname;
+    }
+
+    public String getGurl() {
+        return gurl;
+    }
+
+    public void setGurl(String gurl) {
+        this.gurl = gurl;
+    }
+
+    public int getGprice() {
+        return gprice;
+    }
+
+    public void setGprice(int gprice) {
+        this.gprice = gprice;
+    }
+
+    @Override
+    public String toString() {
+        return "GiftStatements{" +
+                "id=" + id +
+                ", uname='" + uname + '\'' +
+                ", anchor='" + anchor + '\'' +
+                ", giftid=" + giftid +
+                ", giftnum=" + giftnum +
+                ", gdate='" + gdate + '\'' +
+                ", gname='" + gname + '\'' +
+                ", gurl='" + gurl + '\'' +
+                ", gprice=" + gprice +
+                '}';
+    }
 }
