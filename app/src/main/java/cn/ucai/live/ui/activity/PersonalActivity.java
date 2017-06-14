@@ -1,16 +1,16 @@
 package cn.ucai.live.ui.activity;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.utils.EaseUserUtils;
+import com.hyphenate.easeui.widget.EaseImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.live.R;
 import cn.ucai.live.data.model.Result;
 import cn.ucai.live.data.model.Wallet;
@@ -24,19 +24,19 @@ import cn.ucai.live.utils.L;
 
 public class PersonalActivity extends BaseActivity {
     private static final String TAG = "PersonalActivity";
+
+    String s;
     @BindView(R.id.userAvatar)
-    ImageView userAvatar;
+    EaseImageView userAvatar;
     @BindView(R.id.username)
     TextView username;
     @BindView(R.id.userPrice)
     TextView userPrice;
-    @BindView(R.id.recharge)
-    TextView recharge;
-    String s;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal);
+        setContentView(R.layout.fragment_my_profile);
         ButterKnife.bind(this);
         initView();
         initData();
@@ -49,11 +49,12 @@ public class PersonalActivity extends BaseActivity {
             public void run() {
                 try {
                     final Result<Wallet> result = LiveManager.getInstance().getBalance(s);
-                    if(result!=null&&result.isRetMsg()){
+                    if (result != null && result.isRetMsg()) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                recharge.setText("余額:"+result.getRetData().getBalance());
+                                L.e(TAG,"initData result="+ result.getRetData().getBalance());
+                                userPrice.setText(String.valueOf(result.getRetData().getBalance()) );
                             }
                         });
 
@@ -67,8 +68,14 @@ public class PersonalActivity extends BaseActivity {
 
     private void initView() {
         s = EMClient.getInstance().getCurrentUser().toString();
-        L.e(TAG,"initView s="+s);
-        EaseUserUtils.setAppUserNick(s,username);
-        EaseUserUtils.setAppUserAvatar(PersonalActivity.this,s,userAvatar);
+        L.e(TAG, "initView s=" + s);
+        EaseUserUtils.setAppUserNick(s, username);
+        EaseUserUtils.setAppUserAvatar(PersonalActivity.this, s, userAvatar);
+    }
+
+    @OnClick(R.id.userPrice)
+    public void onViewClicked() {
+        RechargeDialog dialog = RechargeDialog.newInstance();
+        dialog.show(getSupportFragmentManager(), "RoomUserGiftDialog");
     }
 }
