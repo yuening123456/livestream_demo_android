@@ -73,6 +73,7 @@ public class GivingDialog extends DialogFragment {
         window.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.BOTTOM;
+
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(wlp);
         unbinder = ButterKnife.bind(this, view);
@@ -96,7 +97,7 @@ public class GivingDialog extends DialogFragment {
 
                     L.e(TAG,"retData...");
                     Result<List<GiftStatements>> result = LiveManager.getInstance().givingGiftStatements(
-                            EMClient.getInstance().getCurrentUser(), pageId, 10);
+                            EMClient.getInstance().getCurrentUser(), pageId, Integer.MAX_VALUE);
                     if (result != null && result.isRetMsg()) {
                         final List<GiftStatements> retData = result.getRetData();
                         L.e(TAG,"retData="+retData);
