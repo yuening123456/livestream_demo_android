@@ -44,6 +44,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.activity.PersonalActivity">
+
+        </activity>
+        <activity
             android:name=".ui.activity.LiveAudienceActivity"
             android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="stateHidden"

@@ -162,7 +162,7 @@ public class LiveListFragment extends Fragment {
         public void onBindViewHolder(PhotoViewHolder holder, int position) {
             LiveRoom liveRoom = liveRoomList.get(position);
             holder.anchor.setText(liveRoom.getName());
-            holder.audienceNum.setText(liveRoom.getAudienceNum()-1 + "人");
+            holder.audienceNum.setText(liveRoom.getAudienceNum() + "人");
             Glide.with(context)
                     .load(liveRoomList.get(position).getCover())
                     .placeholder(R.color.placeholder)

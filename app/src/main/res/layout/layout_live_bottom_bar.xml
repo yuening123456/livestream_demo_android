@@ -23,16 +23,9 @@
         android:layout_toRightOf="@id/comment_image"
         android:src="@drawable/live_user_manager"
         />
-    <ImageView
-        android:id="@+id/gift_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_toRightOf="@+id/user_manager_image"
-        android:src="@drawable/live_button_present_selector"
-        />
 
     <RelativeLayout
+        android:id="@+id/lay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
@@ -53,5 +46,13 @@
             android:visibility="invisible"
             />
     </RelativeLayout>
+    <ImageView
+        android:id="@+id/gift_images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:layout_toLeftOf="@id/lay"
+        android:src="@drawable/live_button_present_selector"
+        />
 
 </RelativeLayout>

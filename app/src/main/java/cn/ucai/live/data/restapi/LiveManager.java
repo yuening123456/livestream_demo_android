@@ -382,4 +382,10 @@ public class LiveManager {
     public Result<Wallet> givingGifts(String username,String anchorId,int giftId,int giftNum) throws LiveException {
         return handleResponseCallToResult(liveService.givingGifts(username,anchorId,giftId,giftNum),Wallet.class);
     }
+    public Result<Wallet> getBalance(String username) throws LiveException {
+        return handleResponseCallToResult(liveService.getBalance(username),Wallet.class);
+    }
+    public Result<Wallet> getRecharge(String username,int rmb) throws LiveException {
+        return handleResponseCallToResult(liveService.recharge(username,rmb),Wallet.class);
+    }
 }

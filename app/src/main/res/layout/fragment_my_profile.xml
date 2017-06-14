@@ -18,6 +18,7 @@
       android:paddingBottom="20dp"
       >
     <com.hyphenate.easeui.widget.EaseImageView
+        android:id="@+id/userAvatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="20dp"
@@ -25,7 +26,7 @@
         app:ease_shape_type="round"
         />
     <TextView
-        android:id="@+id/tv_username"
+        android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -39,51 +40,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:gravity="center"
-        >
+        android:gravity="center">
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="关注"
           android:textColor="@color/common_white"
-          android:textSize="16sp"
-          />
+          android:textSize="16sp" />
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
           android:text="100"
           android:textColor="@color/common_white"
-          android:textSize="16sp"
-          />
+          android:textSize="16sp" />
+
       <View
           android:layout_width="1dp"
           android:layout_height="15dp"
           android:layout_marginLeft="6dp"
-          android:background="@color/common_white"
-          />
+          android:background="@color/common_white" />
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="6dp"
           android:text="粉丝"
           android:textColor="@color/common_white"
-          android:textSize="16sp"
-          />
+          android:textSize="16sp" />
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
           android:text="220"
           android:textColor="@color/common_white"
-          android:textSize="16sp"
-          />
+          android:textSize="16sp" />
+
       <View
           android:layout_width="1dp"
           android:layout_height="15dp"
           android:layout_marginLeft="6dp"
-          android:background="@color/common_white"
-          />
+          android:background="@color/common_white" />
 
       <TextView
           android:layout_width="wrap_content"
@@ -91,16 +91,38 @@
           android:layout_marginLeft="6dp"
           android:text="点赞"
           android:textColor="@color/common_white"
-          android:textSize="16sp"
-          />
+          android:textSize="16sp" />
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
           android:text="25"
           android:textColor="@color/common_white"
-          android:textSize="16sp"
-          />
+          android:textSize="16sp" />
+      <View
+          android:layout_width="1dp"
+          android:layout_height="15dp"
+          android:layout_marginLeft="6dp"
+          android:background="@color/common_white" />
+
+      <TextView
+          android:id="@+id/userPrice"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="6dp"
+          android:text="余額"
+          android:textColor="@color/common_white"
+          android:textSize="16sp" />
+
+      <TextView
+
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:text="0"
+          android:textColor="@color/common_white"
+          android:textSize="16sp" />
     </LinearLayout>
   </LinearLayout>
 

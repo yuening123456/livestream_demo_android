@@ -644,6 +644,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         }
                     }
                     if (!isSuccess){
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -656,7 +657,12 @@ public abstract class LiveBaseActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            CommonUtils.showLongToast(R.string.no_money);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    CommonUtils.showLongToast(R.string.no_money);
+                                }
+                            });
                         }
                     });
                 }

@@ -45,10 +45,10 @@ public class EaseUserUtils {
         if(user != null && user.getAvatar() != null){
             try {
                 int avatarResId = Integer.parseInt(user.getAvatar());
-                Glide.with(context).load(user.getAvatar()).into(imageView);
+                Glide.with(context).load(avatarResId).into(imageView);
             } catch (Exception e) {
                 //use default avatar
-                Glide.with(context).load(user.getAvatar()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ease_default_avatar).into(imageView);
+             Glide.with(context).load(user.getAvatar()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ease_default_avatar).into(imageView);
             }
         }else{
             Glide.with(context).load(R.drawable.ease_default_avatar).into(imageView);
@@ -59,7 +59,7 @@ public class EaseUserUtils {
         if(user != null && user.getAvatar() != null){
             try {
                 int avatarResId = Integer.parseInt(user.getAvatar());
-                Glide.with(context).load(user.getAvatar()).into(imageView);
+                Glide.with(context).load(avatarResId).into(imageView);
             } catch (Exception e) {
                 //use default avatar
                  Glide.with(context).load(user.getAvatar()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ease_default_avatar).into(imageView);
@@ -97,7 +97,7 @@ public class EaseUserUtils {
         if(giftPath!= null ){
             try {
                 int avatarResId = Integer.parseInt(giftPath);
-                Glide.with(context).load(giftPath).into(imageView);
+                Glide.with(context).load(avatarResId).into(imageView);
             } catch (Exception e) {
                 //use default avatar
                 Glide.with(context).load(giftPath).diskCacheStrategy(DiskCacheStrategy.ALL).

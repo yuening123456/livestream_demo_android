@@ -41,4 +41,5 @@
 
     <string name="userinfo_txt_avatar">头像:</string>
     <string name="msg_1">msg_1</string>
+    <string name="no_money">余额不足</string>
 </resources>

@@ -1,7 +1,9 @@
 package cn.ucai.live.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
@@ -16,6 +18,7 @@ import cn.ucai.live.data.model.Result;
 import cn.ucai.live.data.model.Wallet;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
+import cn.ucai.live.utils.CommonUtils;
 import cn.ucai.live.utils.L;
 
 /**
@@ -77,5 +80,32 @@ public class PersonalActivity extends BaseActivity {
     public void onViewClicked() {
         RechargeDialog dialog = RechargeDialog.newInstance();
         dialog.show(getSupportFragmentManager(), "RoomUserGiftDialog");
+        dialog.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String  money = (String) v.getTag();
+                final int i = Integer.parseInt(money);
+                L.e(TAG,"money="+money);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Result<Wallet> result = LiveManager.getInstance().getRecharge(
+                                    String.valueOf(s.toString()),i);
+                            if(result!=null&&result.isRetMsg()){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CommonUtils.showLongToast("您充值的"+money+"已到賬");
+                                    }
+                                });
+                            }
+                        } catch (LiveException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
     }
 }
