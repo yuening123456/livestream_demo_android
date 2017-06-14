@@ -49,9 +49,14 @@ import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.TestAvatarRepository;
 import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
+import cn.ucai.live.data.model.Result;
+import cn.ucai.live.data.model.Wallet;
+import cn.ucai.live.data.restapi.LiveException;
+import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.widget.LiveLeftGiftView;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
+import cn.ucai.live.utils.CommonUtils;
 import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.Utils;
 
@@ -618,9 +623,46 @@ public abstract class LiveBaseActivity extends BaseActivity {
             });
     }
 
-    protected void sendGift(int giftId) {
+    protected void sendGift(final int giftId) {
         Gift gift = LiveHelper.getInstance().getGiftList().get(giftId);
-        onPresentImageClick(giftId);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    boolean isSuccess=false;
+                    Result<Wallet> result=LiveManager.getInstance().givingGifts(
+                            EMClient.getInstance().getCurrentUser(),anchorId,giftId,1);
+                    if(result!=null){
+                        if(result.isRetMsg()){
+                            isSuccess=true;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onPresentImageClick(giftId);
+                                }
+                            });
+                        }
+                    }
+                    if (!isSuccess){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CommonUtils.showLongToast(R.string.no_money);
+                            }
+                        });
+                    }
+                } catch (LiveException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            CommonUtils.showLongToast(R.string.no_money);
+                        }
+                    });
+                }
+            }
+        }).start();
+
     }
 
     //@OnClick(R.id.present_image)
